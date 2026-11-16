@@ -1,0 +1,36 @@
+.loader-two {
+  width: fit-content;
+  font-weight: bold;
+  font-family: monospace;
+  font-size: 30px;
+  color: #0000; /* main text pure white */
+  overflow: hidden;
+  animation: roommateLoading 5s infinite cubic-bezier(0.3, 1, 0, 1);
+}
+
+.loader-two:before {
+  content: "Loading...";
+}
+
+@keyframes roommateLoading {
+  0% {
+    text-shadow: 0 0 #ffffff, 11ch 0 #f5f5f5, 22ch 0 #eaeaea, 33ch 0 #dddddd,
+      44ch 0 #cccccc;
+  }
+  25% {
+    text-shadow: -11ch 0 #ffffff, 0ch 0 #f5f5f5, 11ch 0 #eaeaea, 22ch 0 #dddddd,
+      33ch 0 #cccccc;
+  }
+  50% {
+    text-shadow: -22ch 0 #ffffff, -11ch 0 #f5f5f5, 0ch 0 #eaeaea, 11ch 0 #dddddd,
+      22ch 0 #cccccc;
+  }
+  75% {
+    text-shadow: -33ch 0 #ffffff, -22ch 0 #f5f5f5, -11ch 0 #eaeaea,
+      0ch 0 #dddddd, 11ch 0 #cccccc;
+  }
+  100% {
+    text-shadow: -44ch 0 #ffffff, -33ch 0 #f5f5f5, -22ch 0 #eaeaea,
+      -11ch 0 #dddddd, 0ch 0 #cccccc;
+  }
+}

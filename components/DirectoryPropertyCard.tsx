@@ -1,0 +1,21 @@
+"use client";
+
+import { useEffect, useMemo, useState } from "react";
+import Link from "next/link";
+import { FiHeart, FiMapPin, FiMaximize, FiUser } from "react-icons/fi";
+import { FaBath, FaBed, FaHeart } from "react-icons/fa";
+import type { Property } from "@/types";
+import { checkIsFavorited, toggleFavorite } from "@/utils/api";
+
+export default function DirectoryPropertyCard({ property }: { property: Property }) {
+    const [favorited, setFavorited] = useState(false);
+    const [saving, setSaving] = useState(false);
+    const [imageFailed, setImageFailed] = useState(false);
+    const image = useMemo(() => property.primary_image ? (property.primary_image.startsWith("http") ? property.primary_image : `http://127.0.0.1:8000${property.primary_image}`) : null, [property.primary_image]);
+    const price = new Intl.NumberFormat("en-NG", { maximumFractionDigits: 0 }).format(property.price);
+
+    useEffect(() => { let active = true; void checkIsFavorited(property.id).then((value) => { if (active) setFavorited(value); }).catch(() => undefined); return () => { active = false; }; }, [property.id]);
+    const toggle = async (event: React.MouseEvent) => { event.preventDefault(); if (saving) return; setSaving(true); try { const result = await toggleFavorite(property.id); setFavorited(result.status === "added"); } catch { /* Keep the existing status if saving fails. */ } finally { setSaving(false); } };
+
+    return <article className="group flex h-full flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_3px_12px_rgba(15,23,42,0.05)] transition duration-200 hover:-translate-y-0.5 hover:border-blue-200 hover:shadow-lg"><Link href={`/properties/${property.slug}`} className="relative block h-48 overflow-hidden bg-[#eef6ff]"><>{image && !imageFailed ? <img src={image} alt={property.title} onError={() => setImageFailed(true)} className="h-full w-full object-cover transition duration-300 group-hover:scale-105" /> : <span className="flex h-full w-full items-center justify-center text-[#86a8cc]"><FiUser size={35} /></span>}</><span className="absolute bottom-3 left-3 rounded-md bg-white/95 px-2.5 py-1 text-[11px] font-bold text-[#2879ef] shadow-sm">{property.listing_type || "Listing"}</span><span className="absolute left-3 top-3 rounded-md bg-emerald-50 px-2.5 py-1 text-[11px] font-bold text-emerald-700">{property.property_status || "Available"}</span><button type="button" onClick={toggle} disabled={saving} aria-label={favorited ? "Remove from saved properties" : "Save property"} className="absolute right-3 top-3 rounded-full bg-white p-2 text-slate-500 shadow-sm transition hover:text-rose-500 disabled:opacity-50">{favorited ? <FaHeart className="text-rose-500" /> : <FiHeart />}</button></Link><div className="flex flex-1 flex-col p-4"><p className="text-xs font-semibold uppercase tracking-wide text-[#4e75a3]">{property.property_type}</p><Link href={`/properties/${property.slug}`} className="mt-1"><h3 className="line-clamp-2 text-lg font-bold leading-6 text-slate-900 transition group-hover:text-[#2879ef]">{property.title}</h3></Link><p className="mt-2 flex items-center gap-1.5 text-sm text-slate-500"><FiMapPin className="shrink-0 text-[#2879ef]" /><span className="truncate">{[property.address, property.city_name, property.state_name].filter(Boolean).join(", ")}</span></p><p className="mt-3 text-lg font-bold text-[#163e70]">₦{price}<span className="ml-1 text-xs font-medium text-slate-500">/{property.rental_period || "period"}</span></p><div className="mt-4 flex flex-wrap gap-2 border-t border-slate-100 pt-3 text-xs font-semibold text-slate-600"><span className="inline-flex items-center gap-1 rounded-md bg-slate-50 px-2 py-1"><FaBed className="text-[#2879ef]" />{property.num_bedrooms} bed</span><span className="inline-flex items-center gap-1 rounded-md bg-slate-50 px-2 py-1"><FaBath className="text-[#2879ef]" />{property.num_bathrooms} bath</span>{property.size_sqm ? <span className="inline-flex items-center gap-1 rounded-md bg-slate-50 px-2 py-1"><FiMaximize className="text-[#2879ef]" />{property.size_sqm} m²</span> : null}</div><Link href={`/properties/${property.slug}`} className="mt-4 inline-flex justify-center rounded-lg border border-[#2879ef] px-3 py-2.5 text-sm font-bold text-[#2879ef] transition hover:bg-blue-50">View property</Link></div></article>;
+}
