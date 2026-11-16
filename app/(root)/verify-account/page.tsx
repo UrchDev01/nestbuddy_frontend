@@ -1,12 +1,12 @@
 "use client";
 
-import { useEffect, useState, type FormEvent } from "react";
+import { Suspense, useEffect, useState, type FormEvent } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { AuthInput, AuthLayout, AuthMessage, AuthSubmitButton } from "@/components/auth/AuthLayout";
 import { verifyUser, type AuthResult } from "@/utils/auth";
 
-export default function VerifyAccountPage() {
+function VerifyAccountContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [code, setCode] = useState("");
@@ -92,5 +92,25 @@ export default function VerifyAccountPage() {
         )}
       </form>
     </AuthLayout>
+  );
+}
+
+export default function VerifyAccountPage() {
+  return (
+    <Suspense
+      fallback={
+        <AuthLayout
+          eyebrow="One last step"
+          title="Verify your email"
+          description="Enter the verification code sent to your email to finish creating your account."
+        >
+          <div className="flex min-h-[180px] items-center justify-center">
+            <span className="h-7 w-7 animate-spin rounded-full border-[3px] border-[#d9e5f1] border-t-[#2879ef]" aria-label="Loading..." />
+          </div>
+        </AuthLayout>
+      }
+    >
+      <VerifyAccountContent />
+    </Suspense>
   );
 }

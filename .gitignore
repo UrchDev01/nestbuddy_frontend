@@ -17,6 +17,9 @@
 /.next/
 /out/
 
+# Archived assets kept locally
+/public/old/
+
 # production
 /build
 
