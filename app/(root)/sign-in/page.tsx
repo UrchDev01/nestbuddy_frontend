@@ -65,14 +65,21 @@ export default function SignInPage() {
     setLoading(true);
     const response = await loginUser({ email: email.trim(), password });
     setLoading(false);
+    if (response.code === "email-not-verified") {
+      const next = destination();
+      const verificationUrl = next === "/"
+        ? "/verify-account"
+        : `/verify-account?next=${encodeURIComponent(next)}`;
+      router.replace(verificationUrl);
+      return;
+    }
+
     setResult(response.status === "success"
       ? { ...response, message: "Welcome back! Redirecting you...", code: "login-success" }
       : response);
     setFieldErrors((response.fieldErrors ?? {}) as FieldErrors);
     if (response.status === "success") {
       window.setTimeout(() => router.replace(destination()), 1000);
-    } else if (response.code === "email-not-verified") {
-      window.setTimeout(() => router.push("/verify-account"), 2500);
     }
   };
 

@@ -70,10 +70,18 @@ async function requestAuth(path: string, body: object, action: string): Promise<
     });
     const payload = await response.json().catch(() => ({})) as { status?: string; message?: string; error?: string; data?: Record<string, unknown> };
     if (response.ok && payload.status === "success") return { status: "success", message: payload.message ?? "Your request was completed.", data: payload.data };
+    const emailNotVerified = action === "login"
+      && (response.status === 400 || response.status === 401)
+      && Boolean(payload.error?.toLowerCase().includes("not verified"));
     const message = action === "login" && (response.status === 400 || response.status === 401)
-      ? (payload.error?.toLowerCase().includes("not verified") ? "Please verify your email address before logging in." : "Incorrect email or password. Please check your details and try again.")
+      ? (emailNotVerified ? "Please verify your email address before logging in." : "Incorrect email or password. Please check your details and try again.")
       : payload.error ?? payload.message ?? "We couldn't complete your request. Please try again.";
-    return { status: "error", message, error: message };
+    return {
+      status: "error",
+      message,
+      error: message,
+      ...(emailNotVerified ? { code: "email-not-verified" } : {}),
+    };
   } catch {
     return { status: "error", message: "Unable to connect to NestBuddy right now. Please try again.", retryable: true };
   }
