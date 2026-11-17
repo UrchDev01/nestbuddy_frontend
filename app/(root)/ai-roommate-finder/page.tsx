@@ -91,8 +91,8 @@ const FinderSkeleton = () => (
 );
 
 const stepRoutes = {
-    personal_profile: "/profile-update?next=%2Fai-roommate-finder",
-    roommate_preferences: "/profile-update?section=preferences&next=%2Fai-roommate-finder",
+    personal_profile: "/profile-update/basic",
+    roommate_preferences: "/profile-update/roommate-preferrence",
     compatibility_quiz: "/compatibility-quiz?next=%2Fai-roommate-finder",
 } as const;
 
