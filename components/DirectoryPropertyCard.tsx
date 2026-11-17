@@ -1,17 +1,18 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { FiHeart, FiMapPin, FiMaximize, FiUser } from "react-icons/fi";
 import { FaBath, FaBed, FaHeart } from "react-icons/fa";
 import type { Property } from "@/types";
 import { checkIsFavorited, toggleFavorite } from "@/utils/api";
+import { propertyImageUrl } from "@/utils/propertyPageUtils";
 
 export default function DirectoryPropertyCard({ property }: { property: Property }) {
     const [favorited, setFavorited] = useState(false);
     const [saving, setSaving] = useState(false);
     const [imageFailed, setImageFailed] = useState(false);
-    const image = useMemo(() => property.primary_image ? (property.primary_image.startsWith("http") ? property.primary_image : `http://127.0.0.1:8000${property.primary_image}`) : null, [property.primary_image]);
+    const image = propertyImageUrl(property.primary_image);
     const price = new Intl.NumberFormat("en-NG", { maximumFractionDigits: 0 }).format(property.price);
 
     useEffect(() => { let active = true; void checkIsFavorited(property.id).then((value) => { if (active) setFavorited(value); }).catch(() => undefined); return () => { active = false; }; }, [property.id]);
