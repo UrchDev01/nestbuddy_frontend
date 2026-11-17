@@ -50,13 +50,13 @@ export async function ensureCsrfToken(): Promise<void> {
 export async function sessionFetch(input: RequestInfo | URL, init: RequestInit = {}): Promise<Response> {
   const method = (init.method ?? "GET").toUpperCase();
   if (!["GET", "HEAD", "OPTIONS", "TRACE"].includes(method)) await ensureCsrfToken();
+  const headers = new Headers(init.headers);
+  const token = csrfToken();
+  if (token) headers.set("X-CSRFToken", token);
   return nativeFetch(input, {
     ...init,
     credentials: "include",
-    headers: {
-      ...(csrfToken() ? { "X-CSRFToken": csrfToken() } : {}),
-      ...(init.headers ?? {}),
-    },
+    headers,
   });
 }
 
