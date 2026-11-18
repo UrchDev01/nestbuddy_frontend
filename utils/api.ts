@@ -61,9 +61,15 @@ async function propertyApiError(response: Response, fallback: string): Promise<E
     if (typeof payload !== "object" || payload === null) return new Error(fallback);
     const body = payload as Record<string, unknown>;
     const candidates: unknown[] = [body.detail, body.error, body.message, body.non_field_errors];
+    const collectNestedValues = (value: unknown): unknown[] => {
+        if (Array.isArray(value)) return value.flatMap(collectNestedValues);
+        if (typeof value === "object" && value !== null) {
+            return Object.values(value).flatMap(collectNestedValues);
+        }
+        return [value];
+    };
     for (const value of Object.values(body)) {
-        if (Array.isArray(value)) candidates.push(...value);
-        else candidates.push(value);
+        candidates.push(...collectNestedValues(value));
     }
 
     const message = candidates.find((value): value is string =>
@@ -566,30 +572,21 @@ export async function updateProfile(profileId: string | number, data: FormData) 
 // Update Profile Section
 export async function updateProfileSection(section: string, data: FormData) {
     const url = `${apiBaseUrl}/api/v1/profiles/update_section`;
-    const access_token = localStorage.getItem('access_token');
+    const response = await sessionFetch(url, {
+        method: "PATCH",
+        body: data,
+    });
 
-    try {
-        const response = await fetch(url, {
-            method: "PATCH",
-            headers: {
-                'Authorization': `Bearer ${access_token}`,
-            },
-            body: data,
-
-        });
-
-        if (response.ok) {
-            const result = await response.json();
-            return result;
-        } else {
-            const errorData = await response.json();
-            return errorData;
-            
-        }
-    } catch (error) {
-        console.log(error);
-        
+    if (!response.ok) {
+        throw await propertyApiError(response, `Failed to update ${section} profile.`);
     }
+
+    const result = await response.json().catch(() => null);
+    if (result?.status !== "success") {
+        throw new Error(result?.message || `Failed to update ${section} profile.`);
+    }
+
+    return result;
 }
 
 

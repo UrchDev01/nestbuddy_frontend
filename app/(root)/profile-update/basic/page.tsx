@@ -119,7 +119,7 @@ const UpdateProfileBasic = () => {
                         }
 
 
-                        const mainResponse = await updateProfileSection("main", mainFormData);
+                        await updateProfileSection("main", mainFormData);
                         // --- Social profile ---
                         const socialFormData = new FormData();
                         socialFormData.append("section", "social");
@@ -128,15 +128,12 @@ const UpdateProfileBasic = () => {
                         socialFormData.append("linkedin", formValues.linkedin || "");
                         socialFormData.append("instagram", formValues.instagram || "");
 
-                        const socialResponse = await updateProfileSection("social", socialFormData);
-
-                        if (mainResponse && socialResponse) {
-                                setSuccessMessage("Profile updated successfully!");
-                        }
+                        await updateProfileSection("social", socialFormData);
+                        setSuccessMessage("Profile updated successfully!");
 
                 } catch (error) {
                         console.error("Error updating profile:", error);
-                        setErrorMessage("Failed to update profile.");
+                        setErrorMessage(error instanceof Error ? error.message : "Failed to update profile.");
                 } finally {
                         setIsLoading(false);
                 }
@@ -269,6 +266,11 @@ const UpdateProfileBasic = () => {
                                 {successMessage && (
                                         <p role="status" className="mt-4 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-700">
                                                 {successMessage}
+                                        </p>
+                                )}
+                                {errorMessage && (
+                                        <p role="alert" className="mt-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-700">
+                                                {errorMessage}
                                         </p>
                                 )}
                 </ProfileUpdateLayout>
