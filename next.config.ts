@@ -6,6 +6,7 @@ const nextConfig: NextConfig = {
     domains: [
       "127.0.0.1",
       "localhost",
+      "nestbuddy-api.urchdev.com",
       "nkiri.com",
       "9jarocks.net",
       "i0.wp.com",
