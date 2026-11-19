@@ -360,10 +360,10 @@ export default function MessagesWorkspace({
     }
   };
   return (
-    <div className="min-h-[calc(100vh-6rem)] bg-[#f4f8ff] p-3 sm:p-5">
-      <div className="mx-auto h-[calc(100vh-7rem)] max-w-7xl overflow-hidden rounded-3xl border border-[#dfeeff] bg-white shadow-[0_16px_45px_rgba(24,84,180,0.09)] md:grid md:grid-cols-[320px_minmax(0,1fr)]">
+    <div className="h-full min-h-0 bg-[#f4f8ff] p-0 lg:p-5">
+      <div className="mx-auto flex h-full min-h-0 max-w-7xl flex-col overflow-hidden bg-white shadow-[0_16px_45px_rgba(24,84,180,0.09)] md:grid md:grid-cols-[320px_minmax(0,1fr)] lg:rounded-3xl lg:border lg:border-[#dfeeff]">
         <aside
-          className={`${detailRoute ? "hidden md:flex" : "flex"} min-h-0 flex-col border-r border-slate-100`}
+          className={`${detailRoute ? "hidden md:flex" : "flex"} min-h-0 flex-1 flex-col border-r border-slate-100`}
         >
           <div className="border-b border-slate-100 p-5">
             <h1 className="text-xl font-extrabold text-[#102b50]">Messages</h1>
@@ -440,7 +440,7 @@ export default function MessagesWorkspace({
           </div>
         </aside>
         <section
-          className={`${detailRoute || selected ? "flex" : "hidden md:flex"} min-h-0 flex-col`}
+          className={`${detailRoute || selected ? "flex" : "hidden md:flex"} min-h-0 flex-1 flex-col`}
         >
           {!selected || !active ? (
             <div className="m-auto p-8 text-center">
@@ -453,34 +453,34 @@ export default function MessagesWorkspace({
             </div>
           ) : (
             <>
-              <header className="flex items-center gap-3 border-b border-slate-100 p-4">
+              <header className="flex shrink-0 items-center gap-3 border-b border-slate-100 p-4">
                 <Link
                   href="/messages"
                   className="rounded-lg p-2 text-slate-600 md:hidden"
+                  aria-label="Back to messages"
                 >
                   <FiArrowLeft />
                 </Link>
-                <Avatar
-                  name={active.other_participant.name}
-                  image={active.other_participant.profile_image}
-                />
-                <div className="min-w-0 flex-1">
-                  <h2 className="truncate font-bold text-slate-800">
-                    {active.other_participant.name}
-                  </h2>
-                  <p className="text-xs text-slate-500">
-                    {typing
-                      ? `${active.other_participant.name.split(" ")[0]} is typing…`
-                      : connection === "connected"
-                        ? "Connected"
-                        : "Connection lost. Reconnecting…"}
-                  </p>
-                </div>
                 <Link
                   href={`/roommates/${active.other_participant.slug}`}
-                  className="rounded-lg border border-slate-200 px-3 py-2 text-xs font-bold text-slate-700"
+                  className="flex min-w-0 flex-1 items-center gap-3 rounded-lg focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#2879ef]"
                 >
-                  View profile
+                  <Avatar
+                    name={active.other_participant.name}
+                    image={active.other_participant.profile_image}
+                  />
+                  <span className="min-w-0">
+                    <span className="block truncate font-bold text-slate-800 hover:text-[#2879ef]">
+                      {active.other_participant.name}
+                    </span>
+                    <span className="block truncate text-xs text-slate-500">
+                      {typing
+                        ? `${active.other_participant.name.split(" ")[0]} is typing…`
+                        : connection === "connected"
+                          ? "Connected"
+                          : "Connection lost. Reconnecting…"}
+                    </span>
+                  </span>
                 </Link>
               </header>
               <div className="min-h-0 flex-1 overflow-y-auto bg-[#f8fbff] p-4">
@@ -534,7 +534,7 @@ export default function MessagesWorkspace({
               </div>
               <form
                 onSubmit={send}
-                className="border-t border-slate-100 bg-white p-3"
+                className="shrink-0 border-t border-slate-100 bg-white p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]"
               >
                 <div className="flex items-end gap-2 rounded-2xl border border-slate-200 bg-slate-50 p-2 focus-within:border-[#2879ef]">
                   <textarea
