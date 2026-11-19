@@ -2,8 +2,7 @@
 
 import React, { Suspense, useCallback, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { FiHeart, FiAlertCircle, FiRefreshCw } from "react-icons/fi";
-import { FaHeart } from "react-icons/fa";
+import { FiAlertCircle, FiRefreshCw } from "react-icons/fi";
 import { X } from "lucide-react";
 import AuthGuard from "@/app/hoc/AuthGuard";
 import FavoritesTabs, { FavoritesTabType } from "@/components/favorites/FavoritesTabs";
@@ -177,17 +176,11 @@ function FavoritesContent() {
   };
 
   return (
-    <div className="min-h-screen bg-[#f8fafc] pb-20 pt-6">
+    <div className="min-h-screen bg-[#f8fafc] pb-20 pt-12">
       <div className="mx-auto w-full px-4 sm:px-6 lg:px-6 ">
         {/* Page Header */}
         <div className="flex flex-col gap-4 border-b border-slate-200/80 pb-6 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <div className="inline-flex items-center gap-2 text-rose-500 mb-1">
-              <FaHeart className="h-5 w-5" aria-hidden="true" />
-              <span className="text-xs font-bold uppercase tracking-wider text-slate-500">
-                Saved Items
-              </span>
-            </div>
             <h1 className="text-2xl font-black text-slate-900 sm:text-3xl">
               My Favorites
             </h1>

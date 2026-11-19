@@ -149,7 +149,7 @@ export default function FindAPlaceDashboard() {
 
   return (
     <div className="min-h-screen bg-[#f8fafc] pb-12 text-slate-800">
-      <div className="mx-auto w-full max-w-[1720px] px-3 pt-5 sm:px-5 sm:pt-5 lg:px-7">
+      <div className="mx-auto w-full max-w-[1720px] px-3 pt-12 sm:px-5 sm:pt-12 lg:px-7">
         <header className="mb-4 hidden flex-wrap items-end justify-between gap-3 border-b border-slate-200 pb-4 sm:flex">
           <div>
             <p className="text-[11px] font-bold uppercase tracking-[.18em] text-[#2879ef]">
