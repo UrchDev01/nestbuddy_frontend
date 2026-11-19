@@ -322,6 +322,8 @@ export interface PropertyDetailProps {
   title: string;
   description: string;
   price: number;
+  city: number;
+  state: number;
   address: string;
   city_name: string;
   state_name: string;

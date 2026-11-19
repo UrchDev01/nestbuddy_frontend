@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
-import { FiArrowLeft, FiCheck, FiHeart, FiMapPin, FiShare2, FiShield, FiStar } from "react-icons/fi";
+import { FiArrowLeft, FiCheck, FiEdit2, FiHeart, FiMapPin, FiShare2, FiShield, FiStar } from "react-icons/fi";
 import { FaBath, FaBed } from "react-icons/fa";
 import PropertyImageGallery from "@/components/PropertyImageGallery";
 import PropertyDetailSidebar from "@/components/PropertyDetailSidebar";
@@ -264,6 +264,11 @@ function PropertyDetailContent() {
                         <FiArrowLeft aria-hidden="true" /> Back to places
                     </Link>
                     <div className="flex items-center gap-2">
+                        {isOwner && (
+                            <Link href={`/properties/${property.slug}/edit`} className="inline-flex min-h-10 items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 text-sm font-semibold text-slate-700 shadow-sm transition hover:border-blue-200 hover:text-[#1f6fdd] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2879ef]">
+                                <FiEdit2 aria-hidden="true" /> Edit
+                            </Link>
+                        )}
                         <button type="button" onClick={() => void toggleSaved()} disabled={favoriteLoading} aria-pressed={isFavorite} className="inline-flex min-h-10 items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 text-sm font-semibold text-slate-700 shadow-sm transition hover:border-rose-200 hover:text-rose-600 disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2879ef]">
                             <FiHeart aria-hidden="true" className={isFavorite ? "fill-rose-500 text-rose-500" : ""} />{favoriteLoading ? "Saving…" : isFavorite ? "Saved" : "Save"}
                         </button>

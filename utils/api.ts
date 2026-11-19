@@ -150,6 +150,8 @@ export interface CreatePropertyPayload {
     state: number;
 }
 
+export type UpdatePropertyPayload = CreatePropertyPayload;
+
 async function fetchHomepageResource<T>(
     path: string,
     resourceName: string,
@@ -376,6 +378,38 @@ export async function uploadPropertyImage(propertyId: number, image: File, isPri
         : "";
     const message = typeof detail === "string" && detail.trim() ? detail : fieldErrors;
     throw new Error(message || `The image could not be uploaded (HTTP ${response.status}).`);
+}
+
+export async function updatePropertyListing(propertySlug: string, payload: UpdatePropertyPayload): Promise<{ slug: string }> {
+    if (!apiBaseUrl) {
+        throw new Error("The backend API URL is not configured. Set NEXT_PUBLIC_API_URL.");
+    }
+
+    const response = await sessionFetch(
+        `${apiBaseUrl.replace(/\/$/, "")}/api/v1/properties/${encodeURIComponent(propertySlug)}/`,
+        {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+        },
+    );
+
+    if (!response.ok) {
+        throw await propertyApiError(response, "The listing could not be updated. Please try again.");
+    }
+
+    const result: unknown = await response.json().catch(() => null);
+    if (
+        typeof result !== "object" ||
+        result === null ||
+        !("slug" in result) ||
+        typeof result.slug !== "string" ||
+        !result.slug
+    ) {
+        throw new Error("The listing was updated, but the server returned no property slug.");
+    }
+
+    return { slug: result.slug };
 }
 
 // Fetch States
