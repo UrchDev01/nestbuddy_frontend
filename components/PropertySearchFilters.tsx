@@ -161,7 +161,7 @@ export default function PropertySearchFilters({
       aria-label="Property search filters"
       className="w-full rounded-lg border border-slate-200 bg-white-1 shadow-sm"
     >
-      <div className="grid divide-y divide-slate-200 sm:grid-cols-2 sm:divide-x sm:divide-y-0 lg:grid-cols-[minmax(220px,1.35fr)_minmax(150px,.85fr)_minmax(150px,.85fr)_auto_minmax(155px,.8fr)]">
+      <div className="grid grid-cols-[minmax(0,1fr)_auto] divide-x divide-slate-200 sm:grid-cols-2 sm:divide-y-0 lg:grid-cols-[minmax(220px,1.35fr)_minmax(150px,.85fr)_minmax(150px,.85fr)_auto_minmax(155px,.8fr)]">
         <label className="flex min-w-0 items-center gap-2 px-3 py-2.5 text-slate-400">
           <FiSearch className="shrink-0" />
           <span className="sr-only">Search places</span>
@@ -227,7 +227,7 @@ export default function PropertySearchFilters({
           <FiFilter />
           Filters{active.length ? ` (${active.length})` : ""}
         </button>
-        <p className="flex items-center justify-center px-3 py-2 text-center text-xs font-semibold text-slate-500">
+        <p className="hidden items-center justify-center px-3 py-2 text-center text-xs font-semibold text-slate-500 sm:flex">
           Results:{" "}
           <span className="ml-1 text-slate-800">
             {totalProperties.toLocaleString()} places
@@ -235,7 +235,7 @@ export default function PropertySearchFilters({
         </p>
       </div>
       {active.length > 0 && (
-        <div className="flex flex-wrap items-center gap-2 border-t border-slate-100 px-3 py-3">
+        <div className="hidden flex-wrap items-center gap-2 border-t border-slate-100 px-3 py-3 sm:flex" aria-label="Active filters">
           <span className="text-xs font-semibold text-slate-500">Active:</span>
           {active.map(([key, value]) => (
             <span
