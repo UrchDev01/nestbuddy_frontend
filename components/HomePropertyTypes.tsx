@@ -2,18 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
-
-const propertyTypes = [
-        { type: 'Self Contain', icon: '🏠' },
-        { type: 'Single Room', icon: '🛏️' },
-        { type: 'Student Lodge', icon: '🎓' },
-        { type: 'Shared Apartment', icon: '🏘️' },
-        { type: 'Mini Flat', icon: '🏡' },
-        { type: 'Flat', icon: '🏢' },
-        { type: 'Duplex', icon: '🏚️' },
-
-
-];
+import { BedDouble, Building, Building2, GraduationCap, House } from 'lucide-react';
 
 const HomePropertyTypes: React.FC = () => {
         return (
@@ -34,8 +23,8 @@ const HomePropertyTypes: React.FC = () => {
 
                                                 className="flex flex-col property-item  items-center justify-center gap-2 animate-item-scroll p-2  rounded-br-4xl rounded-bl-4xl shadow-sm lg:h-[200px] md:h-[160px] h-[130px] lg:w-[200px] md:w-[160px] w-[130px]  flex-shrink-0 relative"
                                         >
-                                                <span className="bg-gray-1 p-4 md:w-[100px] md:h-[100px] w-[80px] h-[80px] lg:text-[50px] md:text-[35px] text-[28px]  rounded-full text-center flex justify-center items-center">
-                                                        🏠
+                                                <span className="bg-gray-1 p-4 md:w-[100px] md:h-[100px] w-[80px] h-[80px] rounded-full text-center flex justify-center items-center">
+                                                        <House size={42} strokeWidth={1.8} aria-hidden="true" />
                                                 </span>
                                                 <span className='text-[13px] md:text-md lg:text-[15px]'>Self Contain</span>
 
@@ -61,8 +50,8 @@ const HomePropertyTypes: React.FC = () => {
 
                                                 className="flex flex-col property-item  items-center justify-center gap-2 animate-item-scroll p-2  rounded-tr-4xl rounded-tl-4xl shadow-sm lg:h-[200px] md:h-[160px] h-[130px] lg:w-[200px] md:w-[160px] w-[130px] flex-shrink-0 relative"
                                         >
-                                                <span className="bg-gray-1 p-4 md:w-[100px] md:h-[100px] w-[80px] h-[80px] lg:text-[50px] md:text-[35px] text-[28px] rounded-full text-center flex justify-center items-center">
-                                                        🛏️
+                                                <span className="bg-gray-1 p-4 md:w-[100px] md:h-[100px] w-[80px] h-[80px] rounded-full text-center flex justify-center items-center">
+                                                        <BedDouble size={42} strokeWidth={1.8} aria-hidden="true" />
                                                 </span>
                                                 <span className='text-[13px] md:text-md lg:text-[15px]'>Single Room</span>
 
@@ -87,8 +76,8 @@ const HomePropertyTypes: React.FC = () => {
 
                                                 className="flex flex-col property-item  items-center justify-center gap-2 animate-item-scroll p-2  rounded-br-4xl rounded-bl-4xl shadow-sm lg:h-[200px] md:h-[160px] h-[130px] lg:w-[200px] md:w-[160px] w-[130px] flex-shrink-0 relative"
                                         >
-                                                <span className="bg-gray-1 p-4 md:w-[100px] md:h-[100px] w-[80px] h-[80px] lg:text-[50px] md:text-[35px] text-[28px] rounded-full text-center flex justify-center items-center">
-                                                        🎓
+                                                <span className="bg-gray-1 p-4 md:w-[100px] md:h-[100px] w-[80px] h-[80px] rounded-full text-center flex justify-center items-center">
+                                                        <GraduationCap size={42} strokeWidth={1.8} aria-hidden="true" />
                                                 </span>
                                                 <span className='text-[13px] md:text-md lg:text-[15px]'>Student Lodge</span>
 
@@ -113,8 +102,8 @@ const HomePropertyTypes: React.FC = () => {
 
                                                 className="flex flex-col property-item  items-center justify-center gap-2 animate-item-scroll p-2  rounded-tr-4xl rounded-tl-4xl shadow-sm lg:h-[200px] md:h-[160px] h-[130px] lg:w-[200px] md:w-[160px] w-[130px] flex-shrink-0 relative"
                                         >
-                                                <span className="bg-gray-1 p-4 md:w-[100px] md:h-[100px] w-[80px] h-[80px] lg:text-[50px] md:text-[35px] text-[28px] rounded-full text-center flex justify-center items-center">
-                                                        🏘️
+                                                <span className="bg-gray-1 p-4 md:w-[100px] md:h-[100px] w-[80px] h-[80px] rounded-full text-center flex justify-center items-center">
+                                                        <Building2 size={42} strokeWidth={1.8} aria-hidden="true" />
                                                 </span>
                                                 <span className='text-[13px] md:text-md lg:text-[15px]'>Shared Apartment</span>
 
@@ -138,8 +127,8 @@ const HomePropertyTypes: React.FC = () => {
 
                                                 className="flex flex-col property-item  items-center justify-center gap-2 animate-item-scroll p-2  rounded-br-4xl rounded-bl-4xl shadow-sm lg:h-[200px] md:h-[160px] h-[130px] lg:w-[200px] md:w-[160px] w-[130px] flex-shrink-0 relative"
                                         >
-                                                <span className="bg-gray-1 p-4 md:w-[100px] md:h-[100px] w-[80px] h-[80px] lg:text-[50px] md:text-[35px] text-[28px] rounded-full text-center flex justify-center items-center">
-                                                        🏡
+                                                <span className="bg-gray-1 p-4 md:w-[100px] md:h-[100px] w-[80px] h-[80px] rounded-full text-center flex justify-center items-center">
+                                                        <House size={42} strokeWidth={1.8} aria-hidden="true" />
                                                 </span>
                                                 <span className='text-[13px] md:text-md lg:text-[15px]'>Mini Flat</span>
 
@@ -163,8 +152,8 @@ const HomePropertyTypes: React.FC = () => {
 
                                                 className="flex flex-col property-item  items-center justify-center gap-2 animate-item-scroll p-2  rounded-tr-4xl rounded-tl-4xl shadow-sm lg:h-[200px] md:h-[160px] h-[130px] lg:w-[200px] md:w-[160px] w-[130px] flex-shrink-0 relative"
                                         >
-                                                <span className="bg-gray-1 p-4 md:w-[100px] md:h-[100px] w-[80px] h-[80px] lg:text-[50px] md:text-[35px] text-[28px] rounded-full text-center flex justify-center items-center">
-                                                        🏢
+                                                <span className="bg-gray-1 p-4 md:w-[100px] md:h-[100px] w-[80px] h-[80px] rounded-full text-center flex justify-center items-center">
+                                                        <Building size={42} strokeWidth={1.8} aria-hidden="true" />
                                                 </span>
                                                 <span className='text-[13px] md:text-md lg:text-[15px]'>Flat</span>
 
@@ -188,8 +177,8 @@ const HomePropertyTypes: React.FC = () => {
 
                                                 className="flex flex-col property-item  items-center justify-center gap-2 animate-item-scroll p-2  rounded-br-4xl rounded-bl-4xl shadow-sm lg:h-[200px] md:h-[160px] h-[130px] lg:w-[200px] md:w-[160px] w-[130px] flex-shrink-0 relative"
                                         >
-                                                <span className="bg-gray-1 p-4 md:w-[100px] md:h-[100px] w-[80px] h-[80px] lg:text-[50px] md:text-[35px] text-[28px] rounded-full text-center flex justify-center items-center">
-                                                        🏚️
+                                                <span className="bg-gray-1 p-4 md:w-[100px] md:h-[100px] w-[80px] h-[80px] rounded-full text-center flex justify-center items-center">
+                                                        <Building2 size={42} strokeWidth={1.8} aria-hidden="true" />
                                                 </span>
                                                 <span className='text-[13px] md:text-md lg:text-[15px]'>Duplex</span>
 

@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import Image from "next/image";
 import { motion } from 'framer-motion';
+import { House, Search } from "lucide-react";
 import { fetchProperties } from "@/utils/api";
 import { Property, PropertyFilter } from "@/types";
 import PropertyFilters from "@/components/PropertyFilters";
@@ -213,9 +214,9 @@ const FindAPlace = () => {
                                         </div>
                                 ) : properties.length === 0 ? (
                                         <div className="flex items-center justify-center gap-2 pb-24 text-yellow-200">
-                                                <span className="text-2xl">🏠</span>
+                                                <House size={22} strokeWidth={1.8} aria-hidden="true" />
                                                 <span>No properties found matching your criteria</span>
-                                                <span className="text-2xl">🔍</span>
+                                                <Search size={22} strokeWidth={1.8} aria-hidden="true" />
                                         </div>
                                 ) : (
                                         <div className="pb-24 w-full">

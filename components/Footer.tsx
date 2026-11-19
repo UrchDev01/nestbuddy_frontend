@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { House } from 'lucide-react';
 
 const groups = [
   {
@@ -29,7 +30,9 @@ export default function Footer() {
       <div className="mx-auto grid max-w-7xl gap-10 md:grid-cols-2 lg:grid-cols-[1.3fr_2fr_1fr]">
         <div>
           <Link href="/" className="flex items-center gap-2">
-            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#3b8cff] text-xl">⌂</span>
+            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#3b8cff] text-white">
+              <House size={18} strokeWidth={1.8} aria-hidden="true" />
+            </span>
             <span className="text-xl font-bold tracking-tight text-white">
               NEST<span className="text-[#64a9ff]">BUDDY</span>
             </span>

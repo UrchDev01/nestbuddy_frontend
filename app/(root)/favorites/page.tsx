@@ -4,6 +4,7 @@ import React, { Suspense, useCallback, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { FiHeart, FiAlertCircle, FiRefreshCw } from "react-icons/fi";
 import { FaHeart } from "react-icons/fa";
+import { X } from "lucide-react";
 import AuthGuard from "@/app/hoc/AuthGuard";
 import FavoritesTabs, { FavoritesTabType } from "@/components/favorites/FavoritesTabs";
 import FavoritePropertyCard from "@/components/favorites/FavoritePropertyCard";
@@ -364,8 +365,9 @@ function FavoritesContent() {
             type="button"
             onClick={() => setToastMessage(null)}
             className="ml-2 rounded p-1 hover:bg-white/20"
+            aria-label="Dismiss notification"
           >
-            ✕
+            <X size={14} strokeWidth={2} aria-hidden="true" />
           </button>
         </div>
       )}

@@ -14,6 +14,7 @@ import {
   FiHome,
   FiRefreshCw
 } from "react-icons/fi";
+import { X } from "lucide-react";
 import { fetchCurrentProfile } from "@/utils/api";
 import ProfileCard from "@/components/profileComponents/ProfileCard";
 import DemographicProfile from "@/components/profileComponents/DemographicProfile";
@@ -430,8 +431,9 @@ const Profile = () => {
             type="button"
             onClick={() => setToastMessage(null)}
             className="ml-2 text-xs text-slate-400 hover:text-slate-700"
+            aria-label="Dismiss notification"
           >
-            ✕
+            <X size={14} strokeWidth={2} aria-hidden="true" />
           </button>
         </div>
       )}
