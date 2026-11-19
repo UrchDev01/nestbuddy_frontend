@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { clsx } from 'clsx';
 import Image from 'next/image';
 import { FiHeart, FiLogOut, FiMenu, FiX } from 'react-icons/fi';
-import { FaUser, FaPuzzlePiece, FaRegCommentDots } from 'react-icons/fa';
+import { FaHome, FaUser, FaPuzzlePiece, FaRegCommentDots } from 'react-icons/fa';
 import { } from "react-icons/fi";
 import { isAuthenticated, logoutUser } from '@/utils/auth';
 import { useRouter, usePathname } from "next/navigation";
@@ -217,6 +217,9 @@ const NavBar = () => {
                                                         </Link>
                                                         <Link onClick={closeDropdown} href='/favorites' className={sideLinkClass("/favorites")}>
                                                             <FiHeart className="h-4 w-4 shrink-0 text-[#2879ef]" /> My Favorites
+                                                        </Link>
+                                                        <Link onClick={closeDropdown} href='/list-property' className={sideLinkClass("/list-property")}>
+                                                            <FaHome className="h-4 w-4 shrink-0 text-[#2879ef]" /> List a Property
                                                         </Link>
                                                         <Link onClick={closeDropdown} href='/messages' className={sideLinkClass("/messages")}>
                                                                 <span className="flex min-w-0 items-center gap-3">

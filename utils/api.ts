@@ -343,6 +343,41 @@ export async function createPropertyListing(payload: CreatePropertyPayload) {
     return result as { id: number; slug: string };
 }
 
+export async function uploadPropertyImage(propertyId: number, image: File, isPrimary: boolean) {
+    if (!apiBaseUrl) {
+        throw new Error("The backend API URL is not configured. Set NEXT_PUBLIC_API_URL.");
+    }
+
+    const formData = new FormData();
+    formData.append("property", String(propertyId));
+    formData.append("image", image);
+    formData.append("is_primary", String(isPrimary));
+
+    const response = await sessionFetch(`${apiBaseUrl.replace(/\/$/, "")}/api/v1/property-images/`, {
+        method: "POST",
+        body: formData,
+    });
+
+    if (response.ok) return;
+
+    const result: unknown = await response.json().catch(() => null);
+    const body = typeof result === "object" && result !== null
+        ? result as Record<string, unknown>
+        : null;
+    const detail = body?.detail;
+    const fieldErrors = body
+        ? Object.entries(body)
+            .flatMap(([field, messages]) => {
+                if (typeof messages === "string") return [`${field}: ${messages}`];
+                if (Array.isArray(messages)) return messages.map((message) => `${field}: ${String(message)}`);
+                return [];
+            })
+            .join(" ")
+        : "";
+    const message = typeof detail === "string" && detail.trim() ? detail : fieldErrors;
+    throw new Error(message || `The image could not be uploaded (HTTP ${response.status}).`);
+}
+
 // Fetch States
 export async function fetchStates() {
     const url = `${apiBaseUrl}/api/v1/states`;

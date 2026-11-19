@@ -89,6 +89,7 @@ const MobileNavBar: React.FC<MobileNavBarProps> = ({ userAuthenticated, handleLo
                                                 {[
                                                         { href: "/", label: "Home" },
                                                         { href: "/find-a-place", label: "Find a Place" },
+                                                        { href: "/list-property", label: "List a Property" },
                                                         { href: "/ai-roommate-finder", label: "AI Roommate Finder" },
                                                         { href: "/how-it-works", label: "How It Works" },
                                                 ].map((item) => (
@@ -137,7 +138,7 @@ const MobileNavBar: React.FC<MobileNavBarProps> = ({ userAuthenticated, handleLo
                                                         <div className="mt-10 px-4">
                                                                 <Button
                                                                         title="Sign Out"
-                                                                        containerStyles="w-full bg-red-400 text-white-1 font-bold rounded-2xl py-5 shadow-xl hover:shadow-2xl transform hover:scale-[1.02] transition-all duration-300"
+                                                                        containerStyles="w-full rounded-2xl bg-[#2879ef] py-5 font-bold text-white-1 shadow-sm transition-colors duration-200 hover:bg-[#1467dc]"
                                                                         handleClick={() => void handleLogout().finally(() => setIsOpen(false))}
                                                                         textStyles=''
                                                                         isLoading={isLoggingOut}

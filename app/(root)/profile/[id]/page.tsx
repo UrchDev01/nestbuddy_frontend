@@ -15,7 +15,7 @@ import {
     FiStar,
     FiUsers,
 } from "react-icons/fi";
-import { FaFacebookF, FaInstagram, FaLinkedinIn, FaTwitter } from "react-icons/fa";
+import { FaFacebookF, FaHeart, FaInstagram, FaLinkedinIn, FaTwitter } from "react-icons/fa";
 import AuthGuard from "@/app/hoc/AuthGuard";
 import { addFavorite, fetchPublicProfile, removeFavorite } from "@/utils/api";
 import type { PublicUserProfile } from "@/types";
@@ -277,7 +277,7 @@ function OtherUserProfile() {
                             <div className="mt-4 flex flex-wrap justify-center gap-2.5 sm:justify-start">
                                 <StartChatButton userId={profile.id} label="Message" profileSlug={profile.slug} />
                                 <button type="button" onClick={() => void toggleFavorite()} disabled={favoriteBusy} aria-pressed={isFavorited} className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-[#2879ef] px-4 py-2 text-sm font-bold text-white shadow-sm transition hover:bg-[#1f6fdd] disabled:cursor-wait disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2879ef] focus-visible:ring-offset-2">
-                                    <FiHeart aria-hidden="true" />{favoriteBusy ? "Saving…" : isFavorited ? "Saved profile" : "Save profile"}
+                                    {isFavorited ? <FaHeart aria-hidden="true" className="text-rose-300" /> : <FiHeart aria-hidden="true" />}{favoriteBusy ? "Saving…" : isFavorited ? "Saved profile" : "Save profile"}
                                 </button>
                                 <Link href={`/roommates/${profile.slug}/compatibility`} className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-slate-300 bg-white/90 px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm transition hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2879ef] focus-visible:ring-offset-2">
                                     <FiStar aria-hidden="true" /> View compatibility
@@ -401,7 +401,7 @@ function OtherUserProfile() {
             <div className="fixed inset-x-0 bottom-0 z-40 border-t border-slate-200 bg-white/95 p-3 shadow-[0_-8px_24px_rgba(15,23,42,0.08)] backdrop-blur-sm lg:hidden">
                 <div className="mx-auto flex max-w-lg gap-2">
                     <button type="button" onClick={() => void toggleFavorite()} disabled={favoriteBusy} aria-pressed={isFavorited} className="inline-flex min-h-11 flex-1 items-center justify-center gap-2 rounded-xl border border-[#2879ef] bg-white px-3 text-sm font-bold text-[#1f6fdd] disabled:opacity-60">
-                        <FiHeart aria-hidden="true" />{isFavorited ? "Saved" : "Save"}
+                        {isFavorited ? <FaHeart aria-hidden="true" className="text-rose-500" /> : <FiHeart aria-hidden="true" />}{isFavorited ? "Saved" : "Save"}
                     </button>
                     <Link href={`/roommates/${profile.slug}/compatibility`} className="inline-flex min-h-11 flex-1 items-center justify-center gap-2 rounded-xl bg-[#2879ef] px-3 text-sm font-bold text-white">
                         <FiStar aria-hidden="true" /> Compatibility

@@ -18,7 +18,7 @@ import VerificationGuard from "@/components/VerificationGuard";
 
 function DetailSkeleton() {
     return (
-        <div role="status" aria-label="Loading property details" className="min-h-screen bg-[#f8fafc] px-3 pb-10 pt-5 sm:px-5 lg:px-7">
+        <div role="status" aria-label="Loading property details" className="min-h-screen bg-[#f8fafc] px-3 pb-10 pt-12 sm:px-5 lg:px-7">
             <span className="sr-only">Loading property details…</span>
             <div className="mx-auto max-w-[1440px] animate-pulse">
                 <div className="mb-4 h-5 w-32 rounded bg-slate-200" />
@@ -258,7 +258,7 @@ function PropertyDetailContent() {
 
     return (
         <main className="min-h-screen bg-[#f8fafc] pb-24 text-slate-800 sm:pb-10">
-            <div className="mx-auto w-full max-w-[1440px] px-3 pt-4 sm:px-5 sm:pt-6 lg:px-7">
+            <div className="mx-auto w-full max-w-[1440px] px-3 pt-12 sm:px-5 sm:pt-12 lg:px-7">
                 <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
                     <Link href="/find-a-place" className="inline-flex min-h-10 items-center gap-2 rounded-lg px-2 text-sm font-semibold text-slate-600 transition hover:bg-white hover:text-[#1f6fdd] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2879ef]">
                         <FiArrowLeft aria-hidden="true" /> Back to places

@@ -4,7 +4,7 @@ import { Suspense, useEffect, useMemo, useState } from "react";
 import type { FormEvent } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { createPropertyListing, fetchPropertyListingLocations, PropertyLocationOption } from "@/utils/api";
+import { createPropertyListing, fetchPropertyListingLocations, PropertyLocationOption, uploadPropertyImage } from "@/utils/api";
 import { isAuthenticated } from "@/utils/auth";
 
 const propertyTypes = [
@@ -34,6 +34,8 @@ function ListPropertyContent() {
   const [locationError, setLocationError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
+  const [images, setImages] = useState<File[]>([]);
+  const [createdListingSlug, setCreatedListingSlug] = useState<string | null>(null);
   const [form, setForm] = useState({
     title: "",
     description: "",
@@ -136,6 +138,18 @@ function ListPropertyContent() {
         city: Number(form.city),
         state: Number(form.state),
       });
+
+      try {
+        for (const [index, image] of images.entries()) {
+          await uploadPropertyImage(result.id, image, index === 0);
+        }
+      } catch (error) {
+        setCreatedListingSlug(result.slug);
+        const reason = error instanceof Error ? ` ${error.message}` : "";
+        setSubmitError(`Your listing was created, but one or more images could not be uploaded.${reason}`);
+        return;
+      }
+
       router.push(`/properties/${result.slug}`);
     } catch (error) {
       setSubmitError(error instanceof Error ? error.message : "Unable to create the listing. Please try again.");
@@ -175,7 +189,14 @@ function ListPropertyContent() {
           </div>
         )}
 
-        {submitError && <p className="nb2-listing-error" role="alert">{submitError}</p>}
+        {submitError && (
+          <p className="nb2-listing-error" role="alert">
+            {submitError}{" "}
+            {createdListingSlug && (
+              <Link href={`/properties/${createdListingSlug}`}>View the created listing.</Link>
+            )}
+          </p>
+        )}
 
         <form className="nb2-listing-form" onSubmit={submitListing}>
           <label>
@@ -238,6 +259,19 @@ function ListPropertyContent() {
               Street address
               <input required maxLength={255} value={form.address} onChange={(event) => updateForm("address", event.target.value)} />
             </label>
+            <label className="nb2-listing-full">
+              Property images
+              <input
+                type="file"
+                accept="image/*"
+                multiple
+                aria-describedby="property-images-help"
+                onChange={(event) => setImages(Array.from(event.currentTarget.files ?? []))}
+              />
+              <span id="property-images-help" className="font-normal text-slate-500">
+                Select one or more images. The first image will be the primary photo.
+              </span>
+            </label>
             <label>
               Bedrooms
               <input type="number" min="0" value={form.num_bedrooms} onChange={(event) => updateForm("num_bedrooms", event.target.value)} />
@@ -261,8 +295,8 @@ function ListPropertyContent() {
           </fieldset>
 
           <div className="nb2-listing-actions">
-            <button type="submit" className="nb2-amber" disabled={submitting || locationsLoading}>
-              {submitting ? "Creating listing…" : "Publish listing"}
+            <button type="submit" className="nb2-amber" disabled={submitting || locationsLoading || Boolean(createdListingSlug)}>
+              {submitting ? "Creating listing…" : createdListingSlug ? "Listing created" : "Publish listing"}
             </button>
             <Link href="/find-a-place">Cancel</Link>
           </div>
