@@ -3,17 +3,22 @@
 import { useEffect, useMemo, useState } from "react";
 import type { FormEvent } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
 import {
   fetchCurrentProfile,
+  deletePropertyImage,
   fetchPropertyBySlug,
   fetchPropertyListingLocations,
+  setPropertyImagePrimary,
+  uploadPropertyImage,
   updatePropertyListing,
 } from "@/utils/api";
 import type { CreatePropertyPayload, PropertyLocationOption } from "@/utils/api";
 import type { PropertyDetailProps } from "@/types";
 import AuthGuard from "@/app/hoc/AuthGuard";
 import VerificationGuard from "@/components/VerificationGuard";
+import { propertyImageUrl } from "@/utils/propertyPageUtils";
 
 const propertyTypes = [
   "Self Contain",
@@ -124,6 +129,9 @@ function EditPropertyContent() {
   const { slug } = useParams<{ slug: string }>();
   const router = useRouter();
   const [property, setProperty] = useState<PropertyDetailProps | null>(null);
+  const [selectedImages, setSelectedImages] = useState<File[]>([]);
+  const [removedImageIds, setRemovedImageIds] = useState<number[]>([]);
+  const [primaryImageKey, setPrimaryImageKey] = useState<string | null>(null);
   const [states, setStates] = useState<PropertyLocationOption[]>([]);
   const [cities, setCities] = useState<PropertyLocationOption[]>([]);
   const [form, setForm] = useState<PropertyForm>(emptyForm);
@@ -155,6 +163,8 @@ function EditPropertyContent() {
 
         const details = response.data as PropertyDetailProps;
         setProperty(details);
+        const primaryImage = details.images.find((image) => image.is_primary) ?? details.images[0];
+        setPrimaryImageKey(primaryImage ? `existing-${primaryImage.id}` : null);
         const viewerId = accountIdFromProfile(currentProfile);
         if (viewerId === null) {
           throw new Error("We couldn't verify your account to edit this property.");
@@ -190,6 +200,37 @@ function EditPropertyContent() {
     setForm((current) => ({ ...current, [key]: value }));
   }
 
+  function removeExistingImage(imageId: number) {
+    const remainingImages = (property?.images ?? []).filter(
+      (image) => !removedImageIds.includes(image.id) && image.id !== imageId,
+    );
+    setRemovedImageIds((current) => [...current, imageId]);
+    if (primaryImageKey === `existing-${imageId}`) {
+      const fallbackImage = remainingImages[0];
+      setPrimaryImageKey(fallbackImage ? `existing-${fallbackImage.id}` : selectedImages.length ? "new-0" : null);
+    }
+  }
+
+  function removeSelectedImage(index: number) {
+    const remainingImages = selectedImages.filter((_, selectedIndex) => selectedIndex !== index);
+    setSelectedImages(remainingImages);
+    if (primaryImageKey === `new-${index}`) {
+      const remainingExisting = (property?.images ?? []).find(
+        (image) => !removedImageIds.includes(image.id),
+      );
+      setPrimaryImageKey(
+        remainingExisting
+          ? `existing-${remainingExisting.id}`
+          : remainingImages.length
+            ? `new-${Math.min(index, remainingImages.length - 1)}`
+            : null,
+      );
+    } else if (primaryImageKey?.startsWith("new-")) {
+      const primaryIndex = Number(primaryImageKey.slice(4));
+      if (primaryIndex > index) setPrimaryImageKey(`new-${primaryIndex - 1}`);
+    }
+  }
+
   async function submitChanges(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!property) return;
@@ -221,6 +262,19 @@ function EditPropertyContent() {
         city: Number(form.city),
         state: Number(form.state),
       };
+      for (const [index, image] of selectedImages.entries()) {
+        await uploadPropertyImage(
+          property.id,
+          image,
+          primaryImageKey === `new-${index}`,
+        );
+      }
+      for (const imageId of removedImageIds) {
+        await deletePropertyImage(imageId);
+      }
+      if (primaryImageKey?.startsWith("existing-")) {
+        await setPropertyImagePrimary(Number(primaryImageKey.slice("existing-".length)));
+      }
       const result = await updatePropertyListing(property.slug, payload);
       router.push(`/properties/${result.slug}`);
     } catch (cause) {
@@ -328,6 +382,90 @@ function EditPropertyContent() {
               Street address
               <input required maxLength={255} value={form.address} onChange={(event) => updateForm("address", event.target.value)} />
             </label>
+            <fieldset className="nb2-listing-full rounded-xl border border-slate-200 p-4">
+              <legend className="px-2 font-medium">Property images</legend>
+              <p className="mb-3 text-sm text-slate-600">Choose a primary photo, remove photos, or add new ones.</p>
+              <div className="grid gap-3 sm:grid-cols-2">
+                {property.images
+                  .filter((image) => !removedImageIds.includes(image.id))
+                  .map((image) => {
+                    const imageUrl = propertyImageUrl(image.image);
+                    return (
+                      <div key={image.id} className="flex items-center gap-3 rounded-lg border border-slate-200 p-3">
+                        {imageUrl && (
+                          <Image
+                            src={imageUrl}
+                            alt={image.description || property.title}
+                            width={80}
+                            height={64}
+                            unoptimized
+                            className="h-16 w-20 rounded object-cover"
+                          />
+                        )}
+                        <div className="min-w-0 flex-1">
+                          <label className="flex items-center gap-2 text-sm">
+                            <input
+                              type="radio"
+                              name="primary-property-image"
+                              checked={primaryImageKey === `existing-${image.id}`}
+                              onChange={() => setPrimaryImageKey(`existing-${image.id}`)}
+                            />
+                            Primary photo
+                          </label>
+                          <button
+                            type="button"
+                            className="mt-1 text-sm text-red-700 underline"
+                            onClick={() => removeExistingImage(image.id)}
+                          >
+                            Remove photo
+                          </button>
+                        </div>
+                      </div>
+                    );
+                  })}
+                {selectedImages.map((image, index) => (
+                  <div key={`${image.name}-${image.lastModified}-${index}`} className="flex items-center gap-3 rounded-lg border border-slate-200 p-3">
+                    <div className="flex h-16 w-20 items-center justify-center rounded bg-slate-100 text-xs text-slate-500">New photo</div>
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate text-sm" title={image.name}>{image.name}</p>
+                      <label className="flex items-center gap-2 text-sm">
+                        <input
+                          type="radio"
+                          name="primary-property-image"
+                          checked={primaryImageKey === `new-${index}`}
+                          onChange={() => setPrimaryImageKey(`new-${index}`)}
+                        />
+                        Primary photo
+                      </label>
+                      <button
+                        type="button"
+                        className="text-sm text-red-700 underline"
+                        onClick={() => removeSelectedImage(index)}
+                      >
+                        Remove photo
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <label className="mt-4 block">
+                Add photos
+                <input
+                  className="mt-1 block w-full"
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  onChange={(event) => {
+                    const additions = Array.from(event.currentTarget.files ?? []);
+                    if (!primaryImageKey && additions.length) {
+                      setPrimaryImageKey(`new-${selectedImages.length}`);
+                    }
+                    setSelectedImages((current) => [...current, ...additions]);
+                    event.currentTarget.value = "";
+                  }}
+                />
+              </label>
+            </fieldset>
             <label>
               Bedrooms
               <input type="number" min="0" value={form.num_bedrooms} onChange={(event) => updateForm("num_bedrooms", event.target.value)} />

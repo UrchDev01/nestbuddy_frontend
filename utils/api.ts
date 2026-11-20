@@ -380,6 +380,40 @@ export async function uploadPropertyImage(propertyId: number, image: File, isPri
     throw new Error(message || `The image could not be uploaded (HTTP ${response.status}).`);
 }
 
+export async function setPropertyImagePrimary(imageId: number) {
+    if (!apiBaseUrl) {
+        throw new Error("The backend API URL is not configured. Set NEXT_PUBLIC_API_URL.");
+    }
+
+    const response = await sessionFetch(
+        `${apiBaseUrl.replace(/\/$/, "")}/api/v1/property-images/${imageId}/`,
+        {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ is_primary: true }),
+        },
+    );
+
+    if (!response.ok) {
+        throw await propertyApiError(response, "The primary property image could not be changed.");
+    }
+}
+
+export async function deletePropertyImage(imageId: number) {
+    if (!apiBaseUrl) {
+        throw new Error("The backend API URL is not configured. Set NEXT_PUBLIC_API_URL.");
+    }
+
+    const response = await sessionFetch(
+        `${apiBaseUrl.replace(/\/$/, "")}/api/v1/property-images/${imageId}/`,
+        { method: "DELETE" },
+    );
+
+    if (!response.ok) {
+        throw await propertyApiError(response, "The property image could not be deleted.");
+    }
+}
+
 export async function updatePropertyListing(propertySlug: string, payload: UpdatePropertyPayload): Promise<{ slug: string }> {
     if (!apiBaseUrl) {
         throw new Error("The backend API URL is not configured. Set NEXT_PUBLIC_API_URL.");
