@@ -27,7 +27,8 @@ function IdentityVerification() {
     [consent, setConsent] = useState(false),
     [error, setError] = useState(""),
     [sending, setSending] = useState(false),
-    [camera, setCamera] = useState(false);
+    [camera, setCamera] = useState(false),
+    [cameraReady, setCameraReady] = useState(false);
   const video = useRef<HTMLVideoElement>(null);
   const stream = useRef<MediaStream | null>(null);
   const router = useRouter();
@@ -36,6 +37,7 @@ function IdentityVerification() {
     stream.current?.getTracks().forEach((track) => track.stop());
     stream.current = null;
     setCamera(false);
+    setCameraReady(false);
   };
   useEffect(() => {
     fetchIdentityVerificationStatus()
@@ -48,12 +50,19 @@ function IdentityVerification() {
     const activeStream = stream.current;
     if (!camera || !videoElement || !activeStream) return;
     videoElement.srcObject = activeStream;
-    void videoElement
-      .play()
-      .catch(() =>
-        setError("The camera preview could not start. Please try again."),
-      );
+    let active = true;
+    const startPlayback = () => {
+      void videoElement.play().catch(() => {
+        if (active) {
+          setError("The camera preview could not start. Please try again.");
+        }
+      });
+    };
+    videoElement.addEventListener("loadedmetadata", startPlayback);
+    if (videoElement.readyState >= 1) startPlayback();
     return () => {
+      active = false;
+      videoElement.removeEventListener("loadedmetadata", startPlayback);
       if (videoElement.srcObject === activeStream)
         videoElement.srcObject = null;
     };
@@ -76,7 +85,12 @@ function IdentityVerification() {
         },
         audio: false,
       });
+      if (!activeStream.getVideoTracks().some((track) => track.readyState === "live")) {
+        activeStream.getTracks().forEach((track) => track.stop());
+        throw new Error("No active camera video track was returned.");
+      }
       stream.current = activeStream;
+      setCameraReady(false);
       setCamera(true);
     } catch {
       setError(
@@ -88,15 +102,29 @@ function IdentityVerification() {
     const canvas = window.document.createElement("canvas");
     const videoElement = video.current;
     if (!videoElement) return;
+    if (
+      videoElement.readyState < 2 ||
+      videoElement.videoWidth === 0 ||
+      videoElement.videoHeight === 0
+    ) {
+      setError("The camera preview is not ready yet. Please wait and try again.");
+      return;
+    }
     canvas.width = videoElement.videoWidth;
     canvas.height = videoElement.videoHeight;
-    canvas.getContext("2d")?.drawImage(videoElement, 0, 0);
+    const context = canvas.getContext("2d");
+    if (!context) {
+      setError("The selfie could not be captured. Please try again.");
+      return;
+    }
+    context.drawImage(videoElement, 0, 0);
     canvas.toBlob(
       (blob: Blob | null) => {
-        if (blob)
-          setSelfie(
-            new File([blob], "live-selfie.jpg", { type: "image/jpeg" }),
-          );
+        if (!blob) {
+          setError("The selfie could not be captured. Please try again.");
+          return;
+        }
+        setSelfie(new File([blob], "live-selfie.jpg", { type: "image/jpeg" }));
         stopCamera();
       },
       "image/jpeg",
@@ -267,13 +295,29 @@ function IdentityVerification() {
                   autoPlay
                   muted
                   playsInline
+                  onPlaying={() => {
+                    setCameraReady(true);
+                    setError("");
+                  }}
                   className="mt-5 block min-h-64 w-full rounded-xl bg-slate-900 object-cover"
                 />
+                {!cameraReady && (
+                  <p role="status" className="mt-2 text-sm text-[#53749b]">
+                    Starting camera preview…
+                  </p>
+                )}
                 <button
                   onClick={capture}
-                  className="mt-4 rounded-xl bg-[#2879ef] px-5 py-3 font-bold text-white"
+                  disabled={!cameraReady}
+                  className="mt-4 rounded-xl bg-[#2879ef] px-5 py-3 font-bold text-white disabled:cursor-wait disabled:opacity-50"
                 >
                   Capture selfie
+                </button>
+                <button
+                  onClick={() => void startCamera()}
+                  className="ml-4 text-sm font-bold text-[#2879ef]"
+                >
+                  Restart camera
                 </button>
               </>
             ) : selfie ? (
